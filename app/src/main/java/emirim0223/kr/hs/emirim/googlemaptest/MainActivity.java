@@ -11,11 +11,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
     GoogleMap googleMap;
     SupportMapFragment mapFragment;
+    GroundOverlayOptions loc_mark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +29,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         this.googleMap  = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.4663251,126.9323608),17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                loc_mark = new GroundOverlayOptions();
+                loc_mark.image(BitmapDescriptorFactory.fromResource(R.drawable.location)).position(latLng,100f,100f);
+                googleMap.addGroundOverlay(loc_mark);
+            }
+        });
         
     }
 
@@ -38,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int ITEM_NOMAL = 2;
     public static final int ITEM_jeju = 3;
     public static final int ITEM_hongdae = 4;
+    public static final int ITEM_Mark_Clear = 5;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SubMenu hotMenu = menu.addSubMenu("Hot Place");
         hotMenu.add(0, ITEM_jeju, 0, "제주도");
         hotMenu.add(0, ITEM_hongdae, 0, "홍대");
+        menu.add(0, ITEM_Mark_Clear, 0, "위치 아이콘 제거");
+
        // menu.add(0, ITEM_jeju, 0, "추천 장소");
         return true;
     }
@@ -66,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
             case ITEM_hongdae:
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.558084,126.9233449),17));
+                return true;
+            case ITEM_Mark_Clear:
+                googleMap.clear();
                 return true;
         }
         return false;
