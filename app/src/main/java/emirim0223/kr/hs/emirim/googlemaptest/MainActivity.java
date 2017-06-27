@@ -2,6 +2,9 @@ package emirim0223.kr.hs.emirim.googlemaptest;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,5 +32,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.4663251,126.9323608),17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         
+    }
+
+    public static final int ITEM_SATELLITE = 1;
+    public static final int ITEM_NOMAL = 2;
+    public static final int ITEM_jeju = 3;
+    public static final int ITEM_hongdae = 4;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, ITEM_SATELLITE, 0, "위성 지도");
+        menu.add(0, ITEM_NOMAL, 0, "일반 지도");
+        SubMenu hotMenu = menu.addSubMenu("Hot Place");
+        hotMenu.add(0, ITEM_jeju, 0, "제주도");
+        hotMenu.add(0, ITEM_hongdae, 0, "홍대");
+       // menu.add(0, ITEM_jeju, 0, "추천 장소");
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case ITEM_SATELLITE:
+                googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                return true;
+            case ITEM_NOMAL:
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                return true;
+            case ITEM_jeju:
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(33.3357579,126.2888158),10));
+                return true;
+            case ITEM_hongdae:
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.558084,126.9233449),17));
+                return true;
+        }
+        return false;
     }
 }
